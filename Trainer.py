@@ -115,26 +115,21 @@ class Trainer:
                 
  
     def train_step(self, batch, discount_factor=0.99):
-        """Performs a single training step on a minibatch."""
         states, actions, rewards, next_states, dones = batch
 
-        # Convert to tensors
         states = torch.Tensor(states).to(self. device)
         actions = torch.LongTensor(actions).to(self.device)
         rewards = torch.Tensor(rewards).to(self.device)
         next_states = torch.Tensor(next_states).to(self.device)
         dones = torch.Tensor(dones).to(self.device)
 
-        # Compute Q-values for current states
         q_values = self.agent.main_network(states)
         q_values = q_values.gather(1, actions.unsqueeze(1)).squeeze(1)
 
-        # Compute target Q-values
         with torch.no_grad():
             next_q_values = self.agent.target_network(next_states).max(1)[0]
             target_q_values = rewards + discount_factor * next_q_values * (1 - dones)
 
-        # Compute loss and backpropagate
         loss = F.smooth_l1_loss(q_values, target_q_values)
         self.agent.optimizer.zero_grad()
         loss.backward()

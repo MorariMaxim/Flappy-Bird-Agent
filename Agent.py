@@ -19,17 +19,13 @@ class Agent:
         self.num_actions = num_actions
         self.decayed_steps = 0
 
-        # Initialize main and target networks
-        
         
         self.main_network = FlappyBirdNN().to(self.device)
         self.target_network = FlappyBirdNN().to(self.device)
 
 
-        # Copy initial weights from main to target network
         self.update_target_network()
 
-        # Optimizer for the main network
         self.optimizer = torch.optim.Adam(self.main_network.parameters(), lr=1e-4)
 
     def load_from_checkpoint(self, filename):
@@ -41,8 +37,7 @@ class Agent:
         self.epsilon_final = checkpoint['epsilon_final']
         self.episode = checkpoint['episode']
 
-    def update_target_network(self):
-        """Copies the weights from the main network to the target network."""
+    def update_target_network(self): 
         self.target_network.load_state_dict(self.main_network.state_dict())
         
     def update_epsilon(self):
@@ -52,28 +47,24 @@ class Agent:
         self.decayed_steps += 1
 
 
-    def predict(self, state, target=False):
-        """Predicts Q-values for a given state using the main or target network."""
+    def predict(self, state, target=False): 
         network = self.target_network if target else self.main_network
-        
-        # Convert the state into a single numpy array before converting to a tensor
+         
         state = torch.Tensor(np.array(state)).to(self.device).unsqueeze(0) 
         
         with torch.no_grad():
             return network(state)
 
 
-    def act(self, state, use_epsilon=True): 
-        """Chooses an action using an epsilon-greedy strategy."""
+    def act(self, state, use_epsilon=True):  
         if  use_epsilon and  np.random.rand() < self.epsilon:
-            return np.random.randint(0, self.num_actions)  # Random action
+            return np.random.randint(0, self.num_actions) 
         else:
             q_values = self.predict(state)
             return torch.argmax(q_values).item()    
 
 
-    def evaluate(self, seed=1):                
-        """Evaluates the agent's performance over a number of episodes."""
+    def evaluate(self, seed=1):                 
         env = gymnasium.make("FlappyBird-v0", render_mode="rgb_array", use_lidar=False) 
         total_reward = 0
         
