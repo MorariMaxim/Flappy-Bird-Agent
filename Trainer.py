@@ -86,7 +86,7 @@ class Trainer:
                     continue
 
                 batch = self.replay_buffer.sample(self.batch_size)
-                loss = self.train_step(batch)
+                self.train_step(batch)
 
                 total_reward += cumulative_reward 
 

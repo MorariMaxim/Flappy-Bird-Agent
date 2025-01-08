@@ -47,13 +47,11 @@ class Agent:
         self.decayed_steps += 1
 
 
-    def predict(self, state, target=False): 
-        network = self.target_network if target else self.main_network
-         
+    def predict(self, state):  
         state = torch.Tensor(np.array(state)).to(self.device).unsqueeze(0) 
         
         with torch.no_grad():
-            return network(state)
+            return  self.main_network(state)
 
 
     def act(self, state, use_epsilon=True):  

@@ -8,12 +8,19 @@ class FlappyBirdNN(nn.Module):
         super(FlappyBirdNN, self).__init__()
  
         self.conv1 = nn.Conv2d(in_channels=stack_frame_len, out_channels=32, kernel_size=8, stride=4)
+        # output = 32 * 20 * 20
+        # (84 + 2 * 0 - 8) / 4 + 1 = 20
         self.bn1 = nn.BatchNorm2d(32)  
         
+        
         self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2)
+        # (20+2×0−4) /2 +1 = 9
+        # output = 64 * 9 * 9
         self.bn2 = nn.BatchNorm2d(64)  
         
         self.conv3 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1)
+        # (9+ 2 * 0 - 3) / 1 + 1 = 7
+        # output = 64 * 7 * 7
         self.bn3 = nn.BatchNorm2d(64)  
 
         self.fc1 = nn.Linear(64 * 7 * 7, 512)
